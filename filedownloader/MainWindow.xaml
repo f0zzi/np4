@@ -1,0 +1,25 @@
+﻿<Window x:Class="filedownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:filedownloader"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="338.27">
+    <StackPanel Margin="5">
+        <TextBox Name="tbURI"></TextBox>
+        <Button Margin="0 5" Click="Save_Click">Save path</Button>
+        <Button Margin="0 5" Click="Button_Click">Start</Button>
+        <ListBox Name="lbFiles" Height="330">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="150" Text="{Binding FileName}"></TextBlock>
+                        <TextBlock Width="100" Text="{Binding Status}"></TextBlock>
+                        <TextBlock Text="{Binding Progress}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</Window>
