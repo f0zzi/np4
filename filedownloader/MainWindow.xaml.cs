@@ -35,13 +35,14 @@ namespace filedownloader
                 return System.IO.Path.GetFileName(SavePath);
             }
         }
-        public enum DownloadStatus { FINISHED, STOPED, PAUSED, LOADING, ERROR };
+        public enum DownloadStatus { FINISHED, CANCELED, PAUSED, LOADING, ERROR };
 
         private DownloadStatus status;
 
         public DownloadStatus Status
         {
-            get => status; set
+            get => status;
+            set
             {
                 status = value;
                 OnChange();
@@ -76,16 +77,20 @@ namespace filedownloader
             Client.DownloadFileCompleted += SetFinishedAction;
 
             Client.DownloadFileAsync(new Uri(URL), SavePath);
-
+        }
+        public void Stop()
+        {
+            Client.CancelAsync();
+            Status = DownloadStatus.CANCELED;
         }
         private void UpdateProgress(object sender, DownloadProgressChangedEventArgs e)
         {
             Progress = e.ProgressPercentage;
-            OnChange("Progress");
         }
         private void SetFinishedAction(object sender, AsyncCompletedEventArgs e)
         {
-            Status = DownloadStatus.FINISHED;
+            if (Status != DownloadStatus.CANCELED)
+                Status = DownloadStatus.FINISHED;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -96,7 +101,7 @@ namespace filedownloader
         public override bool Equals(object obj)
         {
             FileInfo other = obj as FileInfo;
-            return this.SavePath == other.SavePath || this.URL == other.URL;
+            return (this.SavePath == other.SavePath || this.URL == other.URL) && this.Status != DownloadStatus.CANCELED;
         }
 
         public override int GetHashCode()
@@ -126,8 +131,15 @@ namespace filedownloader
                 FileInfo tmp = new FileInfo(tbURI.Text, path);
                 if (!lbFiles.Items.Contains(tmp))
                 {
-                    tmp.Download();
-                    lbFiles.Items.Add(tmp);
+                    try
+                    {
+                        tmp.Download();
+                        lbFiles.Items.Add(tmp);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
                 else
                     MessageBox.Show("File is already in download list.");
@@ -144,6 +156,12 @@ namespace filedownloader
             {
                 path = saveFileDialog.FileName;
             }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            ((FileInfo)(sender as Button).DataContext).Stop();
+            (sender as Button).IsEnabled = false;
         }
     }
 }

@@ -14,9 +14,13 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="150" Text="{Binding FileName}"></TextBlock>
-                        <TextBlock Width="100" Text="{Binding Status}"></TextBlock>
-                        <TextBlock Text="{Binding Progress}"></TextBlock>
+                        <TextBlock Width="120" Text="{Binding FileName}"></TextBlock>
+                        <TextBlock Width="70" Text="{Binding Status}"></TextBlock>
+                        <TextBlock Width="30" Text="{Binding Progress}"></TextBlock>
+                        <Button VerticalAlignment="Center" 
+                                VerticalContentAlignment="Center" 
+                                Width="50" Height="20"
+                                Click="Cancel_Click">Cancel</Button>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
